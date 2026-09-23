@@ -1,21 +1,20 @@
 {% extends "base.html" %}
-{% load static %}
-
-{% block body_class %}template-homepage{% endblock %}
-
-{% block extra_css %}
-
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
-{% endblock extra_css %}
+{% load static wagtailcore_tags %}
 
 {% block content %}
+    <!-- Main Hero Banner -->
+    <section style="background-color: #333; padding: 70px 20px; text-align: center; color: #fff;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 15px; font-weight: 700;">Üdvözlünk a Puskás Rádióklubban!</h1>
+        <p style="font-size: 1.15rem; max-width: 750px; margin: 0 auto 25px; color: #ddd;">Hagyomány, technika és közösség. Fedezd fel a rádióamatőr világot velünk.</p>
+        <a href="#about" style="display: inline-block; background-color: #8B1E1E; color: #fff; padding: 10px 24px; border-radius: 4px; text-decoration: none; font-weight: bold;">Friss Hírek</a>
+    </section>
 
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-{% include 'home/welcome_page.html' %}
-
-{% endblock content %}
+    <!-- About Club Section -->
+    <section id="about" style="max-width: 900px; margin: 50px auto; padding: 0 20px; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 15px; color: #222;">A Puskás Tivadar Rádióklubról</h2>
+        <div style="width: 80px; height: 3px; background-color: #8B1E1E; margin: 0 auto 25px;"></div>
+        <p style="color: #555; line-height: 1.8; font-size: 1.05rem;">
+            Klubunk évtizedek óta a hazai rádióamatőr közösség egyik meghatározó bázisa. Célunk az utánpótlás nevelése, a rádióamatőr hagyományok ápolása és a legmodernebb digitális kommunikációs technikák elsajátítása. Akár a rövidhullámú DX-elés, akár a műholdas kommunikáció érdekel, nálunk megtalálod a helyed.
+        </p>
+    </section>
+{% endblock %}

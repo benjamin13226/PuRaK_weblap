@@ -115,14 +115,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+# Internationalization and localization
+LANGUAGE_CODE = 'hu'
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Europe/Budapest'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
+# Supported languages: Hungarian (default) and English
+LANGUAGES = [
+    ('hu', 'Magyar'),
+    ('en', 'English'),
+]
+
+# Enable Wagtail native multi-language page trees
+WAGTAIL_I18N_ENABLED = True
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
