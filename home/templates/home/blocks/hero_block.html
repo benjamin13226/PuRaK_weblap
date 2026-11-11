@@ -1,0 +1,14 @@
+{% load wagtailimages_tags %}
+
+<!-- Hero section block rendering -->
+<div class="hero-section" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% image self.background_image fill-1920x800 as bg %}{{ bg.url }}'); padding: 100px 20px; text-align: center; color: white;">
+    <h1 style="font-size: 2.8rem; margin-bottom: 10px;">{{ self.title }}</h1>
+    {% if self.subtitle %}
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">{{ self.subtitle }}</p>
+    {% endif %}
+    {% if self.button_text and self.button_page %}
+        <a href="{% pageurl self.button_page %}" style="background-color: #a71d2a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            {{ self.button_text }}
+        </a>
+    {% endif %}
+</div>

@@ -1,46 +1,148 @@
-{% load static wagtailcore_tags wagtailuserbar %}
+{% load static wagtailcore_tags %}
 
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            {% block title %}
-            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
-            {% endblock %}
-            {% block title_suffix %}
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="utf-8" />
+    <title>
+        {% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}
+        {% block title_suffix %}
             {% wagtail_site as current_site %}
             {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
-            {% endblock %}
-        </title>
-        {% if page.search_description %}
-        <meta name="description" content="{{ page.search_description }}" />
-        {% endif %}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        {# Force all links in the live preview panel to be opened in a new tab #}
-        {% if request.in_preview_panel %}
-        <base target="_blank">
-        {% endif %}
-
-        {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/purak_website.css' %}">
-
-        {% block extra_css %}
-        {# Override this in templates to add extra stylesheets #}
         {% endblock %}
-    </head>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        /* Base layout reset */
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #333; }
+        
+        /* Top dark red announcement bar */
+        .top-announcement-bar { background-color: #800000; color: #ffffff; text-align: center; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px; }
+        
+        /* Main sticky navigation header bar */
+        .navbar { position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #e0e0e0; padding: 0 40px; height: 60px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .navbar-brand { font-size: 1.25rem; font-weight: bold; color: #111; text-decoration: none; }
+        .nav-links { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; align-items: center; height: 100%; }
+        .nav-links > li { position: relative; display: flex; align-items: center; height: 100%; }
+        .nav-links a { color: #333; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: #800000; }
+        
+        /* Language switcher links styling */
+        .lang-switch { margin-left: 20px; font-size: 0.85rem; font-weight: bold; }
+        .lang-switch a { text-decoration: none; color: #888; transition: color 0.2s; }
+        .lang-switch a.active-lang { color: #800000; text-decoration: underline; }
+        .lang-switch a:hover { color: #800000; }
+        
+        /* Dropdown component styling */
+        .dropdown { position: relative; }
+        .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: #ffffff; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1001; border-radius: 0 0 4px 4px; border: 1px solid #eee; padding: 8px 0; }
+        .dropdown-item { color: #333; padding: 10px 16px; text-decoration: none; display: block; font-size: 0.88rem; font-weight: normal; }
+        .dropdown-item:hover { background-color: #f8f9fa; color: #800000; }
+        .dropdown:hover .dropdown-content { display: block; }
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% wagtailuserbar %}
+        /* Dark footer layout styling */
+        .site-footer { background-color: #1e1e1e; color: #cccccc; border-top: 3px solid #800000; padding: 40px 0 20px 0; font-size: 0.88rem; margin-top: 60px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        .footer-col h4 { color: #ffffff; font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-col p { line-height: 1.6; margin-top: 0; margin-bottom: 12px; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #cccccc; text-decoration: none; transition: color 0.2s; }
+        .footer-col ul li a:hover { color: #ffffff; }
+        .tax-highlight { color: #ff4d4d; font-weight: bold; }
+        .footer-bottom { max-width: 1200px; margin: 30px auto 0 auto; padding: 20px 20px 0 20px; border-top: 1px solid #333333; text-align: center; font-size: 0.8rem; color: #888888; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Top Announcement Bar -->
+    <div class="top-announcement-bar">
+        {% if current_lang == 'en' and footer_settings.top_bar_text_en %}
+            {{ footer_settings.top_bar_text_en }}
+        {% else %}
+            {{ footer_settings.top_bar_text }}
+        {% endif %}
+    </div>
 
+    <!-- Sticky Main Navigation Header -->
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            {% if current_lang == 'en' %}HA5KHC Puskás Tivadar Radio Club{% else %}HA5KHC Puskás Tivadar rádióklub{% endif %}
+        </a>
+        <div style="display: flex; align-items: center;">
+            <ul class="nav-links">
+                {% for item in menu_items %}
+                    {% if item.children.all %}
+                        <li class="dropdown">
+                            <a href="{% if item.link_page %}{% pageurl item.link_page %}{% else %}#{% endif %}">
+                                {% if current_lang == 'en' and item.title_en %}{{ item.title_en }}{% else %}{{ item.title }}{% endif %} ▾
+                            </a>
+                            <div class="dropdown-content">
+                                {% for child in item.children.all %}
+                                    <a href="{% if child.link_page %}{% pageurl child.link_page %}{% else %}#{% endif %}" class="dropdown-item">
+                                        {% if current_lang == 'en' and child.title_en %}{{ child.title_en }}{% else %}{{ child.title }}{% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% if item.link_page %}{% pageurl item.link_page %}{% else %}#{% endif %}">
+                                {% if current_lang == 'en' and item.title_en %}{{ item.title_en }}{% else %}{{ item.title }}{% endif %}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <!-- Dynamic Cookie-based Language Switcher -->
+            <div class="lang-switch">
+                <a href="{% url 'set_language' 'hu' %}" class="{% if current_lang == 'hu' %}active-lang{% endif %}">HU</a> |
+                <a href="{% url 'set_language' 'en' %}" class="{% if current_lang == 'en' %}active-lang{% endif %}">EN</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Body Container -->
+    <main>
         {% block content %}{% endblock %}
+    </main>
 
-        {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/purak_website.js' %}"></script>
+    <!-- Global Dark Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <!-- Column 1: Club Details -->
+            <div class="footer-col">
+                <h4>{% if current_lang == 'en' %}{{ footer_settings.col1_title_en }}{% else %}{{ footer_settings.col1_title }}{% endif %}</h4>
+                <p>{% if current_lang == 'en' %}{{ footer_settings.col1_text_en }}{% else %}{{ footer_settings.col1_text }}{% endif %}</p>
+                <p><strong>{% if current_lang == 'en' %}Address:{% else %}Cím:{% endif %}</strong> {{ footer_settings.col1_address }}</p>
+                <p><strong>{% if current_lang == 'en' %}Club Days:{% else %}Klubnap:{% endif %}</strong> {% if current_lang == 'en' %}{{ footer_settings.col1_clubdays_en }}{% else %}{{ footer_settings.col1_clubdays }}{% endif %}</p>
+            </div>
 
-        {% block extra_js %}
-        {# Override this in templates to add extra javascript #}
-        {% endblock %}
-    </body>
+            <!-- Column 2: Quick Links -->
+            <div class="footer-col">
+                <h4>{% if current_lang == 'en' %}{{ footer_settings.col2_title_en }}{% else %}{{ footer_settings.col2_title }}{% endif %}</h4>
+                <ul>
+                    {% for link in footer_settings.get_col2_links|default:'' %}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Column 3: Support Info -->
+            <div class="footer-col">
+                <h4>{% if current_lang == 'en' %}{{ footer_settings.col3_title_en }}{% else %}{{ footer_settings.col3_title }}{% endif %}</h4>
+                <p>{% if current_lang == 'en' %}{{ footer_settings.col3_text_en }}{% else %}{{ footer_settings.col3_text }}{% endif %}</p>
+                <p class="tax-highlight">{% if current_lang == 'en' %}Tax ID:{% else %}Adószám:{% endif %} {{ footer_settings.col3_tax_number }}</p>
+            </div>
+        </div>
+
+        <!-- Copyright Footer Bar -->
+        <div class="footer-bottom">
+            <p>{% if current_lang == 'en' %}{{ footer_settings.copyright_text_en }}{% else %}{{ footer_settings.copyright_text }}{% endif %}</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
 </html>

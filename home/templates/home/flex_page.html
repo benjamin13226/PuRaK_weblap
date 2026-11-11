@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+<!-- Title rendering using default page title -->
+{% block title %}{{ page.title }}{% endblock %}
+
+<!-- FlexPage body content rendering -->
+{% block content %}
+    <article>
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+    </article>
+{% endblock %}

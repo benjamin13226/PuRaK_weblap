@@ -1,0 +1,26 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<!-- Card grid layout block rendering -->
+<div class="card-grid-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    {% if self.section_title %}
+        <h2 style="text-align: center; margin-bottom: 30px;">{{ self.section_title }}</h2>
+    {% endif %}
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+        {% for card in self.cards %}
+            <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; width: 300px; background: #fff;">
+                {% if card.image %}
+                    {% image card.image fill-300x200 style="width:100%; height:auto;" %}
+                {% endif %}
+                <div style="padding: 15px;">
+                    <h3>{{ card.title }}</h3>
+                    {% if card.text %}
+                        <p>{{ card.text }}</p>
+                    {% endif %}
+                    {% if card.link_page %}
+                        <a href="{% pageurl card.link_page %}" style="color: #007bff; text-decoration: none;">További információ →</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
