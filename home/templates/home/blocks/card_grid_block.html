@@ -1,7 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
 <!-- Responsive card grid supporting standard photo cards and centered icon feature cards -->
-<section class="card-grid-container" style="background-color: {{ self.section_bg }}; padding: 25px 20px 55px 20px;">
+<section {% if self.anchor_id %}id="{{ self.anchor_id }}"{% endif %} class="card-grid-container" style="background-color: {{ self.section_bg }}; padding: 25px 20px 55px 20px; scroll-margin-top: 85px;">
     <div style="max-width: 1050px; margin: 0 auto;">
         {% if self.section_title %}
             <h2 style="text-align: center; margin: 0 0 30px 0; color: #1e1e1e;">
@@ -31,7 +31,7 @@
                         {% endif %}
                         {% if card.link_page %}
                             <div style="margin-top: 14px;">
-                                <a href="{% pageurl card.link_page %}" style="color: #800000; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                                <a href="{% pageurl card.link_page %}{% if card.link_anchor %}#{{ card.link_anchor }}{% endif %}" style="color: #800000; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
                                     {% if current_lang == 'en' %}Read more →{% else %}További információ →{% endif %}
                                 </a>
                             </div>
@@ -52,7 +52,7 @@
                                 </p>
                             {% endif %}
                             {% if card.link_page %}
-                                <a href="{% pageurl card.link_page %}" style="color: #800000; font-weight: 600; text-decoration: none;">
+                                <a href="{% pageurl card.link_page %}{% if card.link_anchor %}#{{ card.link_anchor }}{% endif %}" style="color: #800000; font-weight: 600; text-decoration: none;">
                                     {% if current_lang == 'en' %}Read more →{% else %}További információ →{% endif %}
                                 </a>
                             {% endif %}

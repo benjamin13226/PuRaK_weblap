@@ -9,6 +9,7 @@ ACCENT_COLOR_CHOICES = [
     ("#800000", "Club Maroon (#800000)"),
     ("#1b5e20", "ARDF Green (#1b5e20)"),
     ("#4e342e", "Constructor Brown (#4e342e)"),
+    ("#0d47a1", "BURABU Blue (#0d47a1)"),
     ("#1e1e1e", "Dark Charcoal (#1e1e1e)"),
 ]
 
@@ -63,6 +64,8 @@ class HeroBlock(blocks.StructBlock):
     button_text_en = blocks.CharBlock(required=False, label="Button Text (EN)")
     # Optional internal page destination for the button
     button_page = blocks.PageChooserBlock(required=False, label="Button Target Page")
+    # Optional anchor target on destination page
+    button_anchor = blocks.CharBlock(required=False, label="Button Target Anchor (without #)")
 
     class Meta:
         template = "home/blocks/hero_block.html"
@@ -72,6 +75,8 @@ class HeroBlock(blocks.StructBlock):
 
 # Section heading block with optional underline bar and lead paragraph
 class SectionHeaderBlock(blocks.StructBlock):
+    # Optional HTML anchor identifier for direct section linking
+    anchor_id = blocks.CharBlock(required=False, label="Section Anchor ID (without #)")
     # Hungarian section title
     heading = blocks.CharBlock(required=True, label="Heading (HU)")
     # Optional English section title
@@ -116,6 +121,8 @@ class BilingualRichTextBlock(blocks.StructBlock):
 
 # Highlighted post or featured event card with colored left border
 class HighlightCardBlock(blocks.StructBlock):
+    # Optional HTML anchor identifier for direct section linking
+    anchor_id = blocks.CharBlock(required=False, label="Section Anchor ID (without #)")
     # Hungarian card title
     title = blocks.CharBlock(required=True, label="Title (HU)")
     # Optional English card title
@@ -138,11 +145,30 @@ class HighlightCardBlock(blocks.StructBlock):
     button_text_en = blocks.CharBlock(required=False, label="Button Text (EN)")
     # Optional target page for action button
     button_page = blocks.PageChooserBlock(required=False, label="Button Target Page")
+    # Optional anchor target on destination page
+    button_anchor = blocks.CharBlock(required=False, label="Button Target Anchor (without #)")
 
     class Meta:
         template = "home/blocks/highlight_card_block.html"
         icon = "pick"
         label = "Highlight / Announcement Card"
+
+
+# Dynamic news feed block displaying published NewsPost entries
+class NewsFeedBlock(blocks.StructBlock):
+    # Optional Hungarian section heading above news cards
+    heading = blocks.CharBlock(required=False, default="Friss Hírek", label="Section Heading (HU)")
+    # Optional English section heading above news cards
+    heading_en = blocks.CharBlock(required=False, default="Latest News", label="Section Heading (EN)")
+    # Maximum number of news posts rendered in the feed
+    max_items = blocks.IntegerBlock(default=5, min_value=1, max_value=30, label="Number of Posts to Show")
+    # Full-width section background color
+    section_bg = blocks.ChoiceBlock(choices=SECTION_BG_CHOICES, default="#f3f4f6", label="Section Background")
+
+    class Meta:
+        template = "home/blocks/news_feed_block.html"
+        icon = "doc-full-inverse"
+        label = "News Feed (from News Posts)"
 
 
 # Individual card item used inside the card grid block
@@ -151,16 +177,18 @@ class CardBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True, label="Title (HU)")
     # Optional English card title
     title_en = blocks.CharBlock(required=False, label="Title (EN)")
-    # Optional emoji or short icon symbol displayed above the title
-    icon = blocks.CharBlock(required=False, max_length=16, label="Emoji / Icon (e.g. 🎓, 📡, 🏆)")
+    # Optional emoji or short icon label
+    icon = blocks.CharBlock(required=False, label="Emoji / Icon")
     # Optional card thumbnail or icon image
-    image = ImageChooserBlock(required=False, label="Image (Optional)")
+    image = ImageChooserBlock(required=False, label="Image / Icon")
     # Hungarian short card description
     text = blocks.TextBlock(required=False, label="Description (HU)")
     # Optional English short card description
     text_en = blocks.TextBlock(required=False, label="Description (EN)")
     # Optional internal link page
     link_page = blocks.PageChooserBlock(required=False, label="Target Page")
+    # Optional anchor target on destination page
+    button_anchor = blocks.CharBlock(required=False, label="Target Anchor (without #)")
 
     class Meta:
         icon = "snippet"

@@ -1,11 +1,13 @@
 {% load static wagtailcore_tags %}
 
 <!DOCTYPE html>
-<html lang="{{ current_lang }}">
+<html lang="{{ current_lang|default:'hu' }}">
 <head>
     <meta charset="utf-8" />
     <title>
-        {% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}
+        {% block title %}
+            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
+        {% endblock %}
         {% block title_suffix %}
             {% wagtail_site as current_site %}
             {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
@@ -13,34 +15,51 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        /* Base layout reset */
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #333; }
-        
+        /* Base layout reset and subtle light gray page background */
+        html { scroll-behavior: smooth; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f2f3f5; color: #333; }
+
         /* Top dark red announcement bar */
         .top-announcement-bar { background-color: #800000; color: #ffffff; text-align: center; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px; }
-        
-        /* Main sticky navigation header bar */
-        .navbar { position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #e0e0e0; padding: 0 40px; height: 60px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .navbar-brand { font-size: 1.25rem; font-weight: bold; color: #111; text-decoration: none; }
-        .nav-links { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; align-items: center; height: 100%; }
+
+        /* Main sticky navigation header bar with centered brand, menu group, and right-aligned language switcher */
+        .navbar { position: sticky; top: 0; z-index: 1000; background-color: #ffffff; border-bottom: 1px solid #e0e0e0; height: 68px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .navbar-inner { max-width: 1560px; margin: 0 auto; padding: 0 56px; height: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-brand { font-size: 1.42rem; font-weight: 700; color: #111111; text-decoration: none; letter-spacing: -0.2px; }
+        .nav-links { list-style: none; margin: 0; padding: 0; display: flex; gap: 30px; align-items: center; height: 100%; }
         .nav-links > li { position: relative; display: flex; align-items: center; height: 100%; }
-        .nav-links a { color: #333; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a { color: #2b2b2b; text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.2s; }
         .nav-links a:hover { color: #800000; }
-        
-        /* Language switcher links styling */
-        .lang-switch { margin-left: 20px; font-size: 0.85rem; font-weight: bold; }
-        .lang-switch a { text-decoration: none; color: #888; transition: color 0.2s; }
-        .lang-switch a.active-lang { color: #800000; text-decoration: underline; }
+
+        /* Language switcher links styling positioned toward the right edge */
+        .lang-switch { font-size: 0.95rem; font-weight: 700; color: #888888; }
+        .lang-switch a { text-decoration: none; color: #888888; transition: color 0.2s; }
+        .lang-switch a.active-lang { color: #800000; }
         .lang-switch a:hover { color: #800000; }
-        
-        /* Dropdown component styling */
+
+        /* First-level dropdown menu container */
         .dropdown { position: relative; }
         .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: #ffffff; min-width: 220px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1001; border-radius: 0 0 4px 4px; border: 1px solid #eee; padding: 8px 0; }
-        .dropdown-item { color: #333; padding: 10px 16px; text-decoration: none; display: block; font-size: 0.88rem; font-weight: normal; }
+        .dropdown-item { color: #333; padding: 10px 16px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; font-size: 0.92rem; font-weight: normal; }
         .dropdown-item:hover { background-color: #f8f9fa; color: #800000; }
-        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown:hover > .dropdown-content { display: block; }
 
-        /* Dark footer section matching sample design */
+        /* Nested flyout submenu for third-level navigation items */
+        .dropdown-submenu { position: relative; }
+        .dropdown-submenu-content { display: none; position: absolute; top: -8px; left: 100%; background-color: #ffffff; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); z-index: 1002; border-radius: 4px; border: 1px solid #eee; padding: 8px 0; }
+        .dropdown-submenu:hover > .dropdown-submenu-content { display: block; }
+
+        /* Colored subpage navigation bar with breadcrumb and section submenu links */
+        .subpage-bar { color: #ffffff; padding: 10px 40px; font-size: 0.86rem; }
+        .subpage-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .subpage-breadcrumb { opacity: 0.9; font-size: 0.82rem; }
+        .subpage-breadcrumb a { color: #ffffff; text-decoration: none; font-weight: 600; }
+        .subpage-breadcrumb a:hover { text-decoration: underline; }
+        .subpage-links { list-style: none; margin: 0; padding: 0; display: flex; gap: 22px; flex-wrap: wrap; }
+        .subpage-links a { color: #ffffff; text-decoration: none; font-weight: 600; opacity: 0.88; padding-bottom: 3px; border-bottom: 2px solid transparent; transition: opacity 0.2s, border-color 0.2s; }
+        .subpage-links a:hover, .subpage-links a.active-sublink { opacity: 1; border-bottom-color: #ffffff; }
+
+        /* Global three-column dark footer layout */
         .site-footer { background-color: #1e1e1e; color: #cccccc; border-top: 3px solid #800000; padding: 40px 0 20px 0; font-size: 0.88rem; margin-top: 0; }
         .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
         .footer-col h4 { color: #ffffff; font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -55,21 +74,22 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Top Announcement Bar -->
+    <!-- Top announcement banner -->
     <div class="top-announcement-bar">
         {% if current_lang == 'en' and footer_settings.top_bar_text_en %}
             {{ footer_settings.top_bar_text_en }}
-        {% else %}
+        {% elif footer_settings.top_bar_text %}
             {{ footer_settings.top_bar_text }}
         {% endif %}
     </div>
 
-    <!-- Sticky Main Navigation Header -->
+    <!-- Sticky main navigation header bar -->
     <nav class="navbar">
-        <a href="/" class="navbar-brand">
-            {% if current_lang == 'en' %}HA5KHC Puskás Tivadar Radio Club{% else %}HA5KHC Puskás Tivadar rádióklub{% endif %}
-        </a>
-        <div style="display: flex; align-items: center;">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                {% if current_lang == 'en' %}HA5KHC Puskás Tivadar Radio Club{% else %}HA5KHC Puskás Tivadar rádióklub{% endif %}
+            </a>
+
             <ul class="nav-links">
                 {% for item in menu_items %}
                     {% if item.children.all %}
@@ -79,9 +99,25 @@
                             </a>
                             <div class="dropdown-content">
                                 {% for child in item.children.all %}
-                                    <a href="{% if child.link_page %}{% pageurl child.link_page %}{% else %}#{% endif %}" class="dropdown-item">
-                                        {% if current_lang == 'en' and child.title_en %}{{ child.title_en }}{% else %}{{ child.title }}{% endif %}
-                                    </a>
+                                    {% if child.children.all %}
+                                        <div class="dropdown-submenu">
+                                            <a href="{% if child.link_page %}{% pageurl child.link_page %}{% else %}#{% endif %}" class="dropdown-item">
+                                                <span>{% if current_lang == 'en' and child.title_en %}{{ child.title_en }}{% else %}{{ child.title }}{% endif %}</span>
+                                                <span>▸</span>
+                                            </a>
+                                            <div class="dropdown-submenu-content">
+                                                {% for subchild in child.children.all %}
+                                                    <a href="{% if subchild.link_page %}{% pageurl subchild.link_page %}{% else %}#{% endif %}" class="dropdown-item">
+                                                        {% if current_lang == 'en' and subchild.title_en %}{{ subchild.title_en }}{% else %}{{ subchild.title }}{% endif %}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <a href="{% if child.link_page %}{% pageurl child.link_page %}{% else %}#{% endif %}" class="dropdown-item">
+                                            {% if current_lang == 'en' and child.title_en %}{{ child.title_en }}{% else %}{{ child.title }}{% endif %}
+                                        </a>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </li>
@@ -95,51 +131,95 @@
                 {% endfor %}
             </ul>
 
-            <!-- Dynamic Cookie-based Language Switcher -->
+            <!-- Cookie-based language switcher controls -->
             <div class="lang-switch">
-                <a href="{% url 'set_language' 'hu' %}" class="{% if current_lang == 'hu' %}active-lang{% endif %}">HU</a> |
+                <a href="{% url 'set_language' 'hu' %}" class="{% if current_lang != 'en' %}active-lang{% endif %}">HU</a> |
                 <a href="{% url 'set_language' 'en' %}" class="{% if current_lang == 'en' %}active-lang{% endif %}">EN</a>
             </div>
         </div>
     </nav>
 
-    <!-- Page Body Container -->
+    <!-- Subpage colored navigation bar with breadcrumbs and inherited submenu -->
+    {% if page.get_effective_sub_menu %}
+        <div class="subpage-bar" style="background-color: {{ page.get_effective_theme_color }};">
+            <div class="subpage-bar-inner">
+                <div class="subpage-breadcrumb">
+                    <a href="/">{% if current_lang == 'en' %}Puskás Radio Club{% else %}Puskás Rádióklub{% endif %}</a>
+                    {% for ancestor in page.get_ancestors %}
+                        {% if ancestor.depth > 2 %}
+                            &nbsp;&rsaquo;&nbsp;<a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    &nbsp;&rsaquo;&nbsp;<span>{{ page.title }}</span>
+                </div>
+                <ul class="subpage-links">
+                    {% for sub_item in page.get_effective_sub_menu.items.all %}
+                        <li>
+                            <a href="{% if sub_item.link_page %}{% pageurl sub_item.link_page %}{% if sub_item.anchor %}#{{ sub_item.anchor }}{% endif %}{% elif sub_item.anchor %}#{{ sub_item.anchor }}{% else %}#{% endif %}"
+                               class="{% if sub_item.link_page and sub_item.link_page.id == page.id %}active-sublink{% endif %}">
+                                {% if current_lang == 'en' and sub_item.title_en %}{{ sub_item.title_en }}{% else %}{{ sub_item.title }}{% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Main dynamic page content container -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Global Dark Footer -->
+    <!-- Global dark footer section -->
     <footer class="site-footer">
         <div class="footer-container">
-            <!-- Column 1: Club Details -->
             <div class="footer-col">
-                <h4>{% if current_lang == 'en' %}{{ footer_settings.col1_title_en }}{% else %}{{ footer_settings.col1_title }}{% endif %}</h4>
-                <p>{% if current_lang == 'en' %}{{ footer_settings.col1_text_en }}{% else %}{{ footer_settings.col1_text }}{% endif %}</p>
-                <p><strong>{% if current_lang == 'en' %}Address:{% else %}Cím:{% endif %}</strong> {{ footer_settings.col1_address }}</p>
-                <p><strong>{% if current_lang == 'en' %}Club Days:{% else %}Klubnap:{% endif %}</strong> {% if current_lang == 'en' %}{{ footer_settings.col1_clubdays_en }}{% else %}{{ footer_settings.col1_clubdays }}{% endif %}</p>
+                <h4>
+                    {% if current_lang == 'en' and footer_settings.col1_title_en %}{{ footer_settings.col1_title_en }}{% else %}{{ footer_settings.col1_title|default:"PUSKÁS TIVADAR RÁDIÓKLUB" }}{% endif %}
+                </h4>
+                <p>
+                    {% if current_lang == 'en' and footer_settings.col1_text_en %}{{ footer_settings.col1_text_en }}{% else %}{{ footer_settings.col1_text|default:"Hagyomány és modern technika a rádióamatőr közösségért." }}{% endif %}
+                </p>
+                <p><strong>{% if current_lang == 'en' %}Address:{% else %}Cím:{% endif %}</strong> {{ footer_settings.col1_address|default:"1097 Budapest, Gyáli út 22." }}</p>
+                <p>
+                    <strong>{% if current_lang == 'en' %}Club days:{% else %}Klubnap:{% endif %}</strong>
+                    {% if current_lang == 'en' and footer_settings.col1_clubdays_en %}{{ footer_settings.col1_clubdays_en }}{% else %}{{ footer_settings.col1_clubdays|default:"Hétfő/Péntek: 16:00 - 19:00" }}{% endif %}
+                </p>
             </div>
 
-            <!-- Column 2: Quick Links -->
             <div class="footer-col">
-                <h4>{% if current_lang == 'en' %}{{ footer_settings.col2_title_en }}{% else %}{{ footer_settings.col2_title }}{% endif %}</h4>
+                <h4>
+                    {% if current_lang == 'en' and footer_settings.col2_title_en %}{{ footer_settings.col2_title_en }}{% else %}{{ footer_settings.col2_title|default:"GYORSLINKEK" }}{% endif %}
+                </h4>
                 <ul>
-                    {% for link in footer_settings.get_col2_links|default:'' %}
-                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-                    {% endfor %}
+                    {% if footer_settings %}
+                        {% for link in footer_settings.get_col2_links %}
+                            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li><a href="https://mrasz.hu">MRASZ</a></li>
+                        <li><a href="#">Régi Weboldal</a></li>
+                        <li><a href="#">Viacom Kft. (támogatónk)</a></li>
+                    {% endif %}
                 </ul>
             </div>
 
-            <!-- Column 3: Support Info -->
             <div class="footer-col">
-                <h4>{% if current_lang == 'en' %}{{ footer_settings.col3_title_en }}{% else %}{{ footer_settings.col3_title }}{% endif %}</h4>
-                <p>{% if current_lang == 'en' %}{{ footer_settings.col3_text_en }}{% else %}{{ footer_settings.col3_text }}{% endif %}</p>
-                <p class="tax-highlight">{% if current_lang == 'en' %}Tax ID:{% else %}Adószám:{% endif %} {{ footer_settings.col3_tax_number }}</p>
+                <h4>
+                    {% if current_lang == 'en' and footer_settings.col3_title_en %}{{ footer_settings.col3_title_en }}{% else %}{{ footer_settings.col3_title|default:"TÁMOGASSON MINKET!" }}{% endif %}
+                </h4>
+                <p>
+                    {% if current_lang == 'en' and footer_settings.col3_text_en %}{{ footer_settings.col3_text_en }}{% else %}{{ footer_settings.col3_text|default:"Adója 1%-ával sokat segíthet az utánpótlás nevelésében és a klub fenntartásában." }}{% endif %}
+                </p>
+                <p class="tax-highlight">{% if current_lang == 'en' %}Tax ID:{% else %}Adószám:{% endif %} {{ footer_settings.col3_tax_number|default:"19005560-1-43" }}</p>
             </div>
         </div>
 
-        <!-- Copyright Footer Bar -->
         <div class="footer-bottom">
-            <p>{% if current_lang == 'en' %}{{ footer_settings.copyright_text_en }}{% else %}{{ footer_settings.copyright_text }}{% endif %}</p>
+            <p>
+                {% if current_lang == 'en' and footer_settings.copyright_text_en %}{{ footer_settings.copyright_text_en }}{% else %}{{ footer_settings.copyright_text|default:"© 2026 HA5KHC Puskás Tivadar rádióklub. Minden jog fenntartva." }}{% endif %}
+            </p>
         </div>
     </footer>
 

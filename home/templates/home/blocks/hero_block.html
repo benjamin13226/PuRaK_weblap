@@ -12,7 +12,7 @@
             </p>
         {% endif %}
         {% if self.button_text %}
-            <a href="{% if self.button_page %}{% pageurl self.button_page %}{% else %}#{% endif %}" style="{% if self.button_style == 'white' %}background-color: #ffffff; color: #1e1e1e;{% else %}background-color: {{ self.accent_color }}; color: #ffffff;{% endif %} padding: 12px 26px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: 600; font-size: 0.95rem;">
+            <a href="{% if self.button_page %}{% pageurl self.button_page %}{% if self.button_anchor %}#{{ self.button_anchor }}{% endif %}{% elif self.button_anchor %}#{{ self.button_anchor }}{% else %}#{% endif %}" style="{% if self.button_style == 'white' %}background-color: #ffffff; color: #1e1e1e;{% else %}background-color: {{ self.accent_color }}; color: #ffffff;{% endif %} padding: 12px 26px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: 600; font-size: 0.95rem;">
                 {% if current_lang == 'en' and self.button_text_en %}{{ self.button_text_en }}{% else %}{{ self.button_text }}{% endif %}
             </a>
         {% endif %}
