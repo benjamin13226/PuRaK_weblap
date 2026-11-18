@@ -1,0 +1,31 @@
+{% load wagtailcore_tags %}
+
+<!-- Elevated news or featured event card with colored left border and anchor link support -->
+<section {% if self.anchor_id %}id="{{ self.anchor_id }}"{% endif %} style="background-color: {{ self.section_bg }}; padding: 45px 20px; scroll-margin-top: 85px;">
+    <div style="max-width: 960px; margin: 0 auto;">
+        <div style="background: #ffffff; border-radius: 8px; border-left: 5px solid {{ self.accent_color }}; padding: 28px 34px; box-shadow: 0 3px 14px rgba(0,0,0,0.07);">
+            <h3 style="margin: 0 0 6px 0; font-size: 1.45rem; color: #111111;">
+                {% if current_lang == 'en' and self.title_en %}{{ self.title_en }}{% else %}{{ self.title }}{% endif %}
+            </h3>
+            {% if self.meta_info %}
+                <div style="font-size: 0.85rem; color: #888888; margin-bottom: 14px;">
+                    {% if current_lang == 'en' and self.meta_info_en %}{{ self.meta_info_en }}{% else %}{{ self.meta_info }}{% endif %}
+                </div>
+            {% endif %}
+            <div style="color: #333333; line-height: 1.65; font-size: 0.96rem;">
+                {% if current_lang == 'en' and self.body_en %}
+                    {{ self.body_en|richtext }}
+                {% else %}
+                    {{ self.body|richtext }}
+                {% endif %}
+            </div>
+            {% if self.button_text and self.button_page %}
+                <div style="margin-top: 16px;">
+                    <a href="{% pageurl self.button_page %}{% if self.button_anchor %}#{{ self.button_anchor }}{% endif %}" style="background-color: {{ self.accent_color }}; color: #ffffff; padding: 9px 18px; border-radius: 4px; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block;">
+                        {% if current_lang == 'en' and self.button_text_en %}{{ self.button_text_en }}{% else %}{{ self.button_text }}{% endif %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,25 @@
+{% load wagtailcore_tags %}
+
+<!-- Custom main navigation menu layout supporting grouping headers and nested dropdown items -->
+{% for item in menu_items %}
+    {% if item.has_children_in_menu %}
+        <li class="dropdown">
+            <a href="{{ item.href }}" class="dropdown-toggle">{{ item.text }} ▾</a>
+            <div class="dropdown-content">
+                {% for sub_item in item.sub_menu.items %}
+                    {% if sub_item.link_url == "#" or not sub_item.href or sub_item.href == "" %}
+                        <!-- Non-clickable group header title inside dropdown -->
+                        <div class="dropdown-header">{{ sub_item.text }}</div>
+                    {% else %}
+                        <!-- Regular dropdown child link -->
+                        <a href="{{ sub_item.href }}" class="dropdown-item">{{ sub_item.text }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </li>
+    {% else %}
+        <li>
+            <a href="{{ item.href }}">{{ item.text }}</a>
+        </li>
+    {% endif %}
+{% endfor %}

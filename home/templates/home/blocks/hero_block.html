@@ -1,0 +1,20 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<!-- Full, compact, or CTA hero banner with configurable background and button styles -->
+<div class="hero-section" style="{% if self.background_image %}background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('{% image self.background_image fill-1920x800 as bg %}{{ bg.url }}');{% else %}background-color: {{ self.background_color }};{% endif %} background-size: cover; background-position: center; padding: {% if self.is_compact %}60px 20px{% else %}140px 20px{% endif %}; text-align: center; color: #ffffff; {% if self.show_bottom_border %}border-bottom: 4px solid {{ self.accent_color }};{% endif %}">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <h1 style="font-size: {% if self.is_compact %}2rem{% else %}2.9rem{% endif %}; margin: 0 0 14px 0; font-weight: 700;">
+            {% if current_lang == 'en' and self.title_en %}{{ self.title_en }}{% else %}{{ self.title }}{% endif %}
+        </h1>
+        {% if self.subtitle %}
+            <p style="font-size: 1.05rem; margin: 0 auto {% if self.button_text %}26px{% else %}0{% endif %} auto; color: #e0e0e0; max-width: 680px; line-height: 1.6;">
+                {% if current_lang == 'en' and self.subtitle_en %}{{ self.subtitle_en }}{% else %}{{ self.subtitle }}{% endif %}
+            </p>
+        {% endif %}
+        {% if self.button_text %}
+            <a href="{% if self.button_page %}{% pageurl self.button_page %}{% if self.button_anchor %}#{{ self.button_anchor }}{% endif %}{% elif self.button_anchor %}#{{ self.button_anchor }}{% else %}#{% endif %}" style="{% if self.button_style == 'white' %}background-color: #ffffff; color: #1e1e1e;{% else %}background-color: {{ self.accent_color }}; color: #ffffff;{% endif %} padding: 12px 26px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: 600; font-size: 0.95rem;">
+                {% if current_lang == 'en' and self.button_text_en %}{{ self.button_text_en }}{% else %}{{ self.button_text }}{% endif %}
+            </a>
+        {% endif %}
+    </div>
+</div>

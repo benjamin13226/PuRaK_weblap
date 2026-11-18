@@ -1,0 +1,16 @@
+<!-- Section heading with optional accent underline, intro paragraph, and anchor ID -->
+<section {% if self.anchor_id %}id="{{ self.anchor_id }}"{% endif %} style="background-color: {{ self.section_bg }}; padding: 50px 20px 20px 20px; scroll-margin-top: 85px;">
+    <div style="max-width: 1050px; margin: 0 auto; text-align: {{ self.alignment }};">
+        <h2 style="font-size: 1.85rem; font-weight: 700; color: #1e1e1e; margin: 0 0 12px 0;">
+            {% if current_lang == 'en' and self.heading_en %}{{ self.heading_en }}{% else %}{{ self.heading }}{% endif %}
+        </h2>
+        {% if self.show_underline %}
+            <div style="width: 120px; height: 3px; background-color: {{ self.accent_color }}; {% if self.alignment == 'center' %}margin: 0 auto 22px auto;{% else %}margin: 0 0 22px 0;{% endif %}"></div>
+        {% endif %}
+        {% if self.lead_text %}
+            <p style="color: #555555; font-size: 0.98rem; line-height: 1.7; max-width: 760px; {% if self.alignment == 'center' %}margin: 0 auto;{% else %}margin: 0;{% endif %}">
+                {% if current_lang == 'en' and self.lead_text_en %}{{ self.lead_text_en }}{% else %}{{ self.lead_text }}{% endif %}
+            </p>
+        {% endif %}
+    </div>
+</section>

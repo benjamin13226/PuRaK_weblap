@@ -1,0 +1,73 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<!-- Dynamic news feed section rendering published NewsPost entries -->
+<section style="background-color: {{ self.section_bg }}; padding: 45px 20px;">
+    <div style="max-width: 960px; margin: 0 auto;">
+        {% if self.heading %}
+            <h2 style="font-size: 1.75rem; font-weight: 700; color: #1e1e1e; margin: 0 0 8px 0;">
+                {% if current_lang == 'en' and self.heading_en %}{{ self.heading_en }}{% else %}{{ self.heading }}{% endif %}
+            </h2>
+            <div style="width: 90px; height: 3px; background-color: #800000; margin-bottom: 28px;"></div>
+        {% endif %}
+
+        {% if news_posts %}
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                {% for post in news_posts|slice:":self.max_items" %}
+                    <article style="background: #ffffff; border-radius: 8px; border-left: 5px solid {{ post.accent_color }}; padding: 26px 32px; box-shadow: 0 3px 14px rgba(0,0,0,0.07);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                            <h3 style="margin: 0 0 6px 0; font-size: 1.4rem; color: #111111;">
+                                {% if current_lang == 'en' and post.title_en %}{{ post.title_en }}{% else %}{{ post.title }}{% endif %}
+                            </h3>
+                            {% if post.is_pinned %}
+                                <span style="background-color: {{ post.accent_color }}; color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 3px 9px; border-radius: 12px; text-transform: uppercase;">
+                                    {% if current_lang == 'en' %}Pinned{% else %}Kiemelt{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div style="font-size: 0.84rem; color: #777777; margin-bottom: 14px;">
+                            {{ post.published_date|date:"Y. m. d." }}{% if post.author %} &bull; {{ post.author }}{% endif %}
+                        </div>
+
+                        {% if post.cover_image %}
+                            <div style="margin-bottom: 16px;">
+                                {% image post.cover_image max-900x420 style="max-width: 100%; height: auto; border-radius: 6px;" %}
+                            </div>
+                        {% endif %}
+
+                        {% if post.summary or post.summary_en %}
+                            <p style="font-weight: 600; color: #222222; margin: 0 0 12px 0; line-height: 1.55;">
+                                {% if current_lang == 'en' and post.summary_en %}{{ post.summary_en }}{% else %}{{ post.summary }}{% endif %}
+                            </p>
+                        {% endif %}
+
+                        <div style="color: #333333; line-height: 1.65; font-size: 0.96rem;">
+                            {% if current_lang == 'en' and post.body_en %}
+                                {{ post.body_en|richtext }}
+                            {% else %}
+                                {{ post.body|richtext }}
+                            {% endif %}
+                        </div>
+
+                        {% if post.subpage_links.all %}
+                            <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px;">
+                                {% for link in post.subpage_links.all %}
+                                    {% if link.target_page %}
+                                        <a href="{% pageurl link.target_page %}{% if link.anchor %}#{{ link.anchor }}{% endif %}"
+                                           style="background-color: {{ post.accent_color }}; color: #ffffff; padding: 9px 18px; border-radius: 4px; text-decoration: none; font-size: 0.88rem; font-weight: 600; display: inline-block;">
+                                            {% if current_lang == 'en' and link.label_en %}{{ link.label_en }}{% else %}{{ link.label }}{% endif %} &rarr;
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: #666666;">
+                {% if current_lang == 'en' %}No news posts published yet.{% else %}Jelenleg nincs közzétett hír.{% endif %}
+            </p>
+        {% endif %}
+    </div>
+</section>

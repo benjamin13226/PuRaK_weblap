@@ -1,0 +1,12 @@
+{% load wagtailcore_tags %}
+
+<!-- Bilingual rich text block with optional elevated card container -->
+<div style="max-width: 1100px; margin: 20px auto; padding: 0 20px;">
+    <div style="{% if self.boxed %}background: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);{% endif %} line-height: 1.65; color: #333333;">
+        {% if current_lang == 'en' and self.content_en %}
+            {{ self.content_en|richtext }}
+        {% else %}
+            {{ self.content|richtext }}
+        {% endif %}
+    </div>
+</div>

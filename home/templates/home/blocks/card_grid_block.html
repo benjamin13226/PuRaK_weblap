@@ -1,0 +1,65 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<!-- Responsive card grid supporting standard photo cards and centered icon feature cards -->
+<section {% if self.anchor_id %}id="{{ self.anchor_id }}"{% endif %} class="card-grid-container" style="background-color: {{ self.section_bg }}; padding: 25px 20px 55px 20px; scroll-margin-top: 85px;">
+    <div style="max-width: 1050px; margin: 0 auto;">
+        {% if self.section_title %}
+            <h2 style="text-align: center; margin: 0 0 30px 0; color: #1e1e1e;">
+                {% if current_lang == 'en' and self.section_title_en %}{{ self.section_title_en }}{% else %}{{ self.section_title }}{% endif %}
+            </h2>
+        {% endif %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 26px;">
+            {% for card in self.cards %}
+                {% if self.card_style == 'feature_icon' %}
+                    <div style="background: #f5f6f8; border-radius: 8px; padding: 32px 24px; text-align: center;">
+                        {% if card.icon %}
+                            <div style="font-size: 2.6rem; line-height: 1; margin-bottom: 16px;">
+                                {{ card.icon }}
+                            </div>
+                        {% elif card.image %}
+                            <div style="margin-bottom: 16px; display: flex; justify-content: center;">
+                                {% image card.image max-64x64 style="width: 48px; height: 48px; object-fit: contain;" %}
+                            </div>
+                        {% endif %}
+                        <h3 style="margin: 0 0 12px 0; font-size: 1.15rem; color: #1e1e1e;">
+                            {% if current_lang == 'en' and card.title_en %}{{ card.title_en }}{% else %}{{ card.title }}{% endif %}
+                        </h3>
+                        {% if card.text %}
+                            <p style="margin: 0; color: #666666; font-size: 0.9rem; line-height: 1.6;">
+                                {% if current_lang == 'en' and card.text_en %}{{ card.text_en }}{% else %}{{ card.text }}{% endif %}
+                            </p>
+                        {% endif %}
+                        {% if card.link_page %}
+                            <div style="margin-top: 14px;">
+                                <a href="{% pageurl card.link_page %}{% if card.link_anchor %}#{{ card.link_anchor }}{% endif %}" style="color: #800000; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                                    {% if current_lang == 'en' %}Read more →{% else %}További információ →{% endif %}
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div style="border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        {% if card.image %}
+                            {% image card.image fill-400x240 style="width:100%; height:auto; display:block;" %}
+                        {% endif %}
+                        <div style="padding: 20px;">
+                            <h3 style="margin-top: 0; color: #111111;">
+                                {% if current_lang == 'en' and card.title_en %}{{ card.title_en }}{% else %}{{ card.title }}{% endif %}
+                            </h3>
+                            {% if card.text %}
+                                <p style="color: #555555; line-height: 1.55;">
+                                    {% if current_lang == 'en' and card.text_en %}{{ card.text_en }}{% else %}{{ card.text }}{% endif %}
+                                </p>
+                            {% endif %}
+                            {% if card.link_page %}
+                                <a href="{% pageurl card.link_page %}{% if card.link_anchor %}#{{ card.link_anchor }}{% endif %}" style="color: #800000; font-weight: 600; text-decoration: none;">
+                                    {% if current_lang == 'en' %}Read more →{% else %}További információ →{% endif %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
