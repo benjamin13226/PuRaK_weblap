@@ -1,0 +1,40 @@
+{% load wagtailimages_tags %}
+
+<!-- Photo gallery grid and centered partner logo strip block -->
+<section style="background-color: {{ self.section_bg }}; padding: 35px 20px;">
+    <div style="max-width: 1050px; margin: 0 auto;">
+        {% if self.album_title %}
+            <h3 style="margin: 0 0 8px 0; color: #111111;">
+                {% if current_lang == 'en' and self.album_title_en %}{{ self.album_title_en }}{% else %}{{ self.album_title }}{% endif %}
+            </h3>
+        {% endif %}
+        {% if self.description %}
+            <p style="color: #555555; margin: 0 0 20px 0;">
+                {% if current_lang == 'en' and self.description_en %}{{ self.description_en }}{% else %}{{ self.description }}{% endif %}
+            </p>
+        {% endif %}
+
+        {% if self.images %}
+            {% if self.display_mode == 'logo_strip' %}
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 45px; padding: 10px 0;">
+                    {% for img in self.images %}
+                        {% image img max-180x70 style="max-height: 55px; width: auto; object-fit: contain; opacity: 0.85;" %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+                    {% for img in self.images %}
+                        {% image img original as full_img %}
+                        <a href="{{ full_img.url }}" target="_blank" style="display: block; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                            {% image img fill-400x300 style="width: 100%; height: auto; display: block;" %}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+            <p style="text-align: center; color: #777777; font-style: italic; padding: 30px 0;">
+                {% if current_lang == 'en' %}No albums uploaded yet.{% else %}Még nincsenek feltöltött albumok.{% endif %}
+            </p>
+        {% endif %}
+    </div>
+</section>

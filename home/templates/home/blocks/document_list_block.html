@@ -1,0 +1,27 @@
+<!-- Official document categories and downloadable file links -->
+<div style="max-width: 1100px; margin: 35px auto; padding: 0 20px;">
+    <div style="background: #ffffff; border-radius: 8px; padding: 32px; box-shadow: 0 3px 12px rgba(0,0,0,0.07); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
+        {% for category in self.categories %}
+            <div>
+                <h3 style="margin: 0 0 12px 0; font-size: 1.25rem; color: #111111;">
+                    {% if current_lang == 'en' and category.category_title_en %}{{ category.category_title_en }}{% else %}{{ category.category_title }}{% endif %}
+                </h3>
+                {% if category.documents %}
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        {% for item in category.documents %}
+                            <li style="margin-bottom: 10px;">
+                                <a href="{{ item.document.url }}" target="_blank" style="color: #800000; font-weight: 600; text-decoration: none;">
+                                    📄 {% if current_lang == 'en' and item.title_en %}{{ item.title_en }}{% else %}{{ item.title }}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: #777777; font-style: italic; margin: 0;">
+                        {% if current_lang == 'en' and category.empty_text_en %}{{ category.empty_text_en }}{% else %}{{ category.empty_text }}{% endif %}
+                    </p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

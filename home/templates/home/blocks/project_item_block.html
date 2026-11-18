@@ -1,0 +1,51 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<!-- Technical project showcase card with description, images, and downloadable files -->
+<div style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
+    <div style="background: #ffffff; border-radius: 8px; border-left: 5px solid {{ self.accent_color }}; padding: 28px 32px; box-shadow: 0 3px 12px rgba(0,0,0,0.07);">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.35rem; color: #111111;">
+                {% if current_lang == 'en' and self.title_en %}{{ self.title_en }}{% else %}{{ self.title }}{% endif %}
+            </h3>
+            {% if self.year_or_author %}
+                <span style="font-size: 0.85rem; color: #777777; font-weight: 600;">{{ self.year_or_author }}</span>
+            {% endif %}
+        </div>
+
+        <div style="color: #333333; line-height: 1.65; margin-bottom: 18px;">
+            {% if current_lang == 'en' and self.description_en %}
+                {{ self.description_en|richtext }}
+            {% else %}
+                {{ self.description|richtext }}
+            {% endif %}
+        </div>
+
+        {% if self.photos %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px;">
+                {% for photo in self.photos %}
+                    {% image photo original as full_photo %}
+                    <a href="{{ full_photo.url }}" target="_blank" style="display: block; border-radius: 6px; overflow: hidden;">
+                        {% image photo fill-300x200 style="width: 100%; height: auto; display: block;" %}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if self.attachments %}
+            <div style="border-top: 1px solid #eeeeee; padding-top: 14px;">
+                <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: #444444;">
+                    {% if current_lang == 'en' %}Attached Files:{% else %}Csatolt fájlok:{% endif %}
+                </strong>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 14px;">
+                    {% for file_item in self.attachments %}
+                        <li>
+                            <a href="{{ file_item.document.url }}" target="_blank" style="color: {{ self.accent_color }}; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                                📎 {% if current_lang == 'en' and file_item.title_en %}{{ file_item.title_en }}{% else %}{{ file_item.title }}{% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
